@@ -1,7 +1,6 @@
 # Stage 1: Build the React frontend
 FROM node:18-alpine AS frontend-builder
 
-# Set the working directory for the frontend code
 WORKDIR /app
 
 # Copy package.json and package-lock.json first to leverage Docker's layer caching
@@ -19,7 +18,6 @@ RUN npm run build
 # Stage 2: Create the final production image
 FROM python:3.9-slim-buster
 
-# Set the working directory for the backend
 WORKDIR /app
 
 # Copy the backend requirements file and install Python dependencies
@@ -32,8 +30,8 @@ COPY backend/ .
 # Copy the built frontend assets from the previous stage
 COPY --from=frontend-builder /app/build /app/static
 
-# Expose the port
+# Expose the port (use PORT environment variable for Render)
 EXPOSE 8000
 
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.main:app"]
+# Command to run FastAPI with uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

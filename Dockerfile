@@ -9,7 +9,6 @@ FROM node:18-alpine AS frontend_builder
 WORKDIR /app
 
 # Copy package.json and package-lock.json to install dependencies.
-# The 'src' folder from the user's project is at the root, so we'll copy the relevant files.
 COPY ./package*.json ./
 
 # Install Node.js dependencies.

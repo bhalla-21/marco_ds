@@ -3,7 +3,7 @@ import TopNav from "../components/TopNav";
 import FAQEntityDropdown from "../components/FAQEntityDropdown";
 import ReactMarkdown from 'react-markdown';
 
-const API_URL = "https://marco-ds-1.onrender.com:8000";
+const API_URL = "https://marco-ds-1.onrender.com";
 
 const faqs = [
   {

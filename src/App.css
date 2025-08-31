@@ -1,0 +1,459 @@
+body, .main-bg {
+  background: #f8f8fc;
+  color: #2e2656;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+}
+
+.mondelez-logo {
+  width: 120px;
+  margin-top: 20px;
+}
+
+.header-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.topnav {
+  display: flex;
+  gap: 34px;
+  align-items: center;
+  background: #eee;
+  padding: 12px 43px;
+  margin-bottom: 24px;
+  border-radius: 9px;
+}
+
+.nav-link {
+  color: #6c3f99;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 1.07rem;
+  transition: opacity 0.25s;
+}
+
+.user-email {
+  margin-left: auto;
+  color: #999;
+  font-size: 0.98rem;
+  font-style: italic;
+}
+
+.marco-header {
+  font-size: 2.2rem;
+  margin: 14px 0 8px 0;
+  font-weight: 800;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.gpt-accent {
+  color: #6c3f99;
+  margin-left: 4px;
+}
+
+.sparkle-icon {
+  font-size: 1.5rem;
+  margin-left: 6px;
+}
+
+.powered-by {
+  font-size: 1.02rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.intro-text {
+  font-size: 1.15rem;
+  margin-bottom: 26px;
+  color: #3a3662;
+}
+
+.chat-section {
+  margin-bottom: 38px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.chat-box {
+  min-width: 320px;
+  width: 320px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  font-size: 1.1rem;
+}
+
+.chat-button {
+  background: #6c3f99;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 7px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.chat-link {
+  color: #6c3f99;
+  font-size: 0.98rem;
+  text-decoration: underline;
+  margin-left: 10px;
+}
+
+.skills-section {
+  margin-top: 30px;
+}
+
+.skills-title {
+  font-size: 1.07rem;
+  color: #444;
+  margin-bottom: 9px;
+}
+
+.card-row {
+  display: flex;
+  gap: 34px;
+}
+
+.section-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #ccc9;
+  padding: 20px 22px;
+  min-width: 240px;
+  font-size: 1rem;
+  margin-bottom: 5px;
+  position: relative;
+  transition: box-shadow 0.3s;
+}
+
+.section-card:hover:not(.section-card-disabled):not(.section-card-comingsoon) {
+  box-shadow: 0 4px 16px #bbb;
+}
+
+.section-card-disabled, .section-card-comingsoon {
+  opacity: 0.47;
+  pointer-events: none;
+}
+
+.comingsoon-badge, .indev-badge {
+  display: inline-block;
+  margin-top: 12px;
+  color: #6c3f99;
+  font-weight: 700;
+  background: #ede6fa;
+  border-radius: 6px;
+  padding: 3px 9px;
+}
+
+.enterprise-title {
+  font-size: 2rem;
+  color: #6c3f99;
+  margin: 18px 0 32px;
+}
+
+.faq-flex-row {
+  display: flex;
+  gap: 33px;
+  margin-top: 42px;
+}
+
+.faq-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 15px #eee9;
+  padding: 32px 38px;
+  min-width: 350px;
+  max-width: 430px;
+  text-align: center;
+  font-size: 1.18rem;
+  margin: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faq-entity-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.entity-bold-container {
+  position: relative;
+  display: inline-block;
+}
+
+.entity-bold {
+  font-weight: bold;
+  color: #6c3f99;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.entity-bold:hover {
+  color: #4b286a;
+  background: #ece3fa;
+}
+
+.entity-popup-hover {
+  position: absolute;
+  top: 120%;
+  left: 0;
+  z-index: 100;
+  background: #fff;
+  box-shadow: 0 6px 28px #cabbf6;
+  border-radius: 10px;
+  padding: 7px 0;
+  min-width: 132px;
+  margin-top: 7px;
+  border: 1.5px solid #ba9ce5;
+}
+
+.entity-option-hover {
+  padding: 10px 22px;
+  cursor: pointer;
+  color: #6c3f99;
+  font-weight: 500;
+  background: #fff;
+  border-radius: 6px;
+  margin-bottom: 1px;
+  text-align: left;
+}
+
+.entity-option-hover.selected,
+.entity-option-hover:hover {
+  background: #f4eefb;
+}
+
+.chat-bar-input {
+  height: 48px;
+  width: 54vw;
+  font-size: 1.12rem;
+  padding: 0 22px;
+  border-radius: 24px;
+  border: 2px solid #9477cb;
+  box-shadow: 0 2px 8px #e2daf9;
+  transition: box-shadow 0.2s;
+}
+
+.chat-bar-send {
+  margin-left: 15px;
+  background: #6c3f99;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+
+/* Make markdown tables look like Excel in React */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 14px 0 20px 0;
+  background: #faf7fb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.markdown-content th, .markdown-content td {
+  border: 1px solid #c6b5dd;
+  padding: 6px 9px;
+  text-align: center;
+}
+
+.markdown-content th {
+  background: #e6e6fa;
+  color: #5F2C56;
+  font-weight: bold;
+  border-bottom: 2px solid #b39cd0;
+}
+
+.markdown-content tr:nth-child(even) td {
+  background: #f5f1fa;
+}
+
+/* --- Add or update these styles in your main CSS file --- */
+
+/* Main container for the homepage content */
+.header-section {
+  max-width: 900px;
+  margin: 40px auto;
+  text-align: left; /* Align all text to the left */
+}
+
+.mondelez-logo {
+  height: 20px; /* Adjust size as needed */
+  margin-bottom: 20px;
+}
+
+.marco-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.gpt-accent {
+  color: #5F2C56; /* Mondelez Purple */
+}
+
+.powered-by {
+  font-size: 0.9rem;
+  margin-top: 5px;
+  color: #555;
+}
+
+.intro-text {
+  font-size: 1rem;
+  margin-top: 20px;
+  max-width: 600px; /* Keep text width manageable */
+  line-height: 1.6;
+  color: #444;
+}
+
+/* --- New styles for the chat input section --- */
+.chat-section {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between input and buttons */
+}
+
+.chat-box {
+  flex-grow: 1; /* Allow input to take available space */
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.chat-box:focus {
+  outline: none;
+  border-color: #5F2C56; /* Highlight with brand color on focus */
+}
+
+.chat-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.chat-history-button {
+  padding: 12px 20px;
+  background-color: #5F2C56; /* Mondelez Purple */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.chat-history-button:hover {
+  background-color: #4a2244; /* Darker purple on hover */
+}
+
+.chat-link {
+  font-size: 0.9rem;
+  color: #8E7AB5; /* Lighter purple for link */
+  text-decoration: none;
+  white-space: nowrap; /* Prevent link from wrapping */
+}
+
+.chat-link:hover {
+  text-decoration: underline;
+}
+
+/* Skills section remains the same */
+.skills-section {
+  margin-top: 50px;
+}
+
+.skills-title {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* --- Styles for the new TopNav component --- */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav-left, .nav-right, .nav-links, .user-profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-logo {
+  height: 24px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #555;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #f4f0f7; /* Light lavender hover */
+}
+
+/* Style for the active page link */
+.nav-link.active {
+  background-color: #E6E6FA; /* Lavender background for active link */
+  color: #5F2C56; /* Mondelez Purple text */
+  font-weight: 500;
+}
+
+.icon-placeholder, .icon-placeholder-user {
+  font-size: 1.2rem;
+}
+
+.data-refresh-text {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.user-profile {
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.chevron-down {
+  font-size: 0.7rem;
+}

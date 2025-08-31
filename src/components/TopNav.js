@@ -7,7 +7,7 @@ function TopNav() {
     <nav className="top-nav">
       <div className="nav-left">
         <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/2/26/Mondelez_International_logo.svg" 
+          src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Mondelez_international_2012_logo.svg" 
           alt="Mondelez Logo" 
           className="nav-logo" 
         />

@@ -1,14 +1,17 @@
 import pandas as pd
 import json
 import logging
+import os
 from fastapi import FastAPI, Body
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.models import ChatRequest, RichChatResponse
 from app.data_loader import load_financials, get_dynamic_data
 from app.prompts import build_query_planner_prompt, build_insight_and_charting_prompt
 from app.llm_client import call_gemini
 from app.chart_generator import render_chart
-from app.utils import clean_and_parse_json # Import the new robust parser
+from app.utils import clean_and_parse_json
 from dotenv import load_dotenv
 
 # Configure basic logging to see detailed output in the terminal
@@ -18,6 +21,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 load_dotenv()
 
 app = FastAPI(title="MDLZ Visual LLM Backend")
+
+# Mount static files for React frontend
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Pre-load data and schema on application startup for efficiency
 df = load_financials()
@@ -99,13 +105,30 @@ def chat_endpoint(request: ChatRequest = Body(...)):
         logging.critical(f"An unhandled exception occurred in the chat endpoint: {e}", exc_info=True)
         return RichChatResponse(text_answer="", error=f"An unexpected server error occurred: {str(e)}")
 
-@app.get("/")
+@app.get("/api/health")
 def healthcheck():
     """A simple endpoint to confirm that the server is running."""
     return {"status": "ok", "message": "MDLZ Visual LLM Backend is running."}
 
-
+# Serve React app at root
 @app.get("/")
-def healthcheck():
-    """A simple endpoint to confirm that the server is running."""
-    return {"status": "ok", "message": "MDLZ Visual LLM Backend is running."}
+async def read_index():
+    """Serve the React app's index.html at the root URL"""
+    return FileResponse('static/index.html')
+
+# Catch-all route for React Router (handles client-side routing)
+@app.get("/{path:path}")
+async def catch_all(path: str):
+    """
+    Catch-all route to serve the React app for client-side routing.
+    API routes should be prefixed with 'api/' to avoid conflicts.
+    """
+    # If it's an API route that doesn't exist, return error
+    if path.startswith("api/"):
+        return {"error": "API endpoint not found", "path": path}
+    
+    # For all other paths, serve the React app (client-side routing)
+    if os.path.exists("static/index.html"):
+        return FileResponse('static/index.html')
+    else:
+        return {"error": "Frontend not found", "message": "React app build files not available"}

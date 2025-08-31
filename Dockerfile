@@ -29,14 +29,14 @@ FROM python:3.9-slim-buster
 WORKDIR /app/backend
 
 # Copy the Python requirements file.
-COPY requirements.txt ./
+COPY ../requirements.txt ./
 
 # Install Python dependencies from the requirements file, and also install
 # gunicorn to run the server and whitenoise to serve the static frontend files.
 RUN pip install --no-cache-dir -r requirements.txt gunicorn whitenoise
 
 # Copy the backend application code.
-COPY backend/app ./app
+COPY ./app ./app
 
 # Copy the built frontend assets from the previous stage into the static directory of the backend.
 # The `build` folder from the frontend builder stage contains the static files.

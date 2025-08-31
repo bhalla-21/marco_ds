@@ -5,18 +5,17 @@
 # Use an official Node.js image to build the frontend assets.
 FROM node:18-alpine AS frontend_builder
 
-# Set the working directory to the root of the app inside the container.
-WORKDIR /app
+# Set a working directory for the frontend build. This ensures a clean
+# and predictable environment.
+WORKDIR /app/frontend
 
-# Copy package.json and package-lock.json to install dependencies.
-COPY ./package*.json ./
+# Copy everything from the repository root into this directory.
+# This ensures that all necessary files, including package.json,
+# src, and public, are available for the build process.
+COPY . .
 
 # Install Node.js dependencies.
 RUN npm install
-
-# Copy the public and src directories.
-COPY ./public ./public
-COPY ./src/ ./src/
 
 # Build the React application for production.
 RUN npm run build
@@ -28,7 +27,7 @@ FROM python:3.9-slim-buster
 # Set the working directory for the backend.
 WORKDIR /app/backend
 
-# Copy the Python requirements file.
+# Copy the Python requirements file from the repository root.
 COPY ../requirements.txt ./
 
 # Install Python dependencies from the requirements file, and also install
@@ -40,7 +39,7 @@ COPY ./app ./app
 
 # Copy the built frontend assets from the previous stage into the static directory of the backend.
 # The `build` folder from the frontend builder stage contains the static files.
-COPY --from=frontend_builder /app/build ./app/public
+COPY --from=frontend_builder /app/frontend/build ./app/public
 
 # Expose the port that the app will run on.
 EXPOSE 8000

@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import logging
 import os
-from fastapi import FastAPI, Body, Request
+from fastapi import FastAPI, Body, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -108,22 +108,28 @@ def healthcheck():
     """A simple endpoint to confirm that the server is running."""
     return {"status": "ok", "message": "MDLZ Visual LLM Backend is running."}
 
-# Mount static files for CSS, JS, and other assets
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Serve React app for all routes (this handles client-side routing)
-@app.get("/{full_path:path}")
-async def serve_react_app(full_path: str):
+# Custom 404 handler to serve static files that might be missed
+@app.exception_handler(404)
+async def not_found_exception_handler(request: Request, exc: HTTPException):
     """
-    Catch-all route to serve React app for client-side routing.
-    This must be the LAST route defined.
+    Handle 404 errors by checking if the requested file exists in static directory
     """
-    # If it's an API route that doesn't exist, return proper 404
-    if full_path.startswith("api/"):
-        return {"detail": "Not Found"}
+    path = request.url.path
     
-    # For all other paths (including /enterprise), serve the React app
-    if os.path.exists("static/index.html"):
-        return FileResponse('static/index.html')
-    else:
-        return {"detail": "Frontend not found"}
+    # Check if it's a static file request
+    if path.startswith("/static/"):
+        # Try to find the file in the static directory
+        filepath = os.path.join('static', path[8:])  # Remove '/static/' prefix
+        if os.path.isfile(filepath):
+            return FileResponse(filepath)
+    
+    # For all other 404s on non-API routes, serve the React app
+    if not path.startswith("/api/"):
+        if os.path.exists("static/index.html"):
+            return FileResponse('static/index.html')
+    
+    # For API routes, return proper 404
+    return {"detail": "Not Found"}
+
+# Mount static files at root with html=True for React app
+app.mount("/", StaticFiles(directory="static", html=True), name="static")

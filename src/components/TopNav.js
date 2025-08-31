@@ -1,13 +1,13 @@
 // src/components/TopNav.js
 import React from 'react';
-import { NavLink } from 'react-router-dom'; // Use NavLink for active styling
+import { NavLink } from 'react-router-dom';
 
 function TopNav() {
   return (
     <nav className="top-nav">
       <div className="nav-left">
         <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Mondelez_international_2012_logo.svg" 
+          src="/images/mondelez-logo.png" 
           alt="Mondelez Logo" 
           className="nav-logo" 
         />

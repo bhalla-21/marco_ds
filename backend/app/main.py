@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import logging
 import os
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API Routes first (before static file mounting)
+# API Routes (define these FIRST, before static file mounting)
 @app.post("/chat", response_model=RichChatResponse)
 def chat_endpoint(request: ChatRequest = Body(...)):
     """
@@ -108,5 +108,22 @@ def healthcheck():
     """A simple endpoint to confirm that the server is running."""
     return {"status": "ok", "message": "MDLZ Visual LLM Backend is running."}
 
-# Mount static files at root with html=True to serve the React app properly
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+# Mount static files for CSS, JS, and other assets
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Serve React app for all routes (this handles client-side routing)
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    """
+    Catch-all route to serve React app for client-side routing.
+    This must be the LAST route defined.
+    """
+    # If it's an API route that doesn't exist, return proper 404
+    if full_path.startswith("api/"):
+        return {"detail": "Not Found"}
+    
+    # For all other paths (including /enterprise), serve the React app
+    if os.path.exists("static/index.html"):
+        return FileResponse('static/index.html')
+    else:
+        return {"detail": "Frontend not found"}

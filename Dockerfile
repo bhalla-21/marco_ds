@@ -15,8 +15,9 @@ COPY ./package*.json ./
 # Install Node.js dependencies.
 RUN npm install
 
-# Copy the rest of the frontend source code.
-COPY ./src/ ./
+# Copy the public and src directories.
+COPY ./public ./public
+COPY ./src/ ./src/
 
 # Build the React application for production.
 RUN npm run build

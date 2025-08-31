@@ -22,9 +22,6 @@ load_dotenv()
 
 app = FastAPI(title="MDLZ Visual LLM Backend")
 
-# Mount static files for React frontend
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 # Pre-load data and schema on application startup for efficiency
 df = load_financials()
 df_schema = df.head(0).to_string()
@@ -38,6 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# API Routes first (before static file mounting)
 @app.post("/chat", response_model=RichChatResponse)
 def chat_endpoint(request: ChatRequest = Body(...)):
     """
@@ -110,25 +108,5 @@ def healthcheck():
     """A simple endpoint to confirm that the server is running."""
     return {"status": "ok", "message": "MDLZ Visual LLM Backend is running."}
 
-# Serve React app at root
-@app.get("/")
-async def read_index():
-    """Serve the React app's index.html at the root URL"""
-    return FileResponse('static/index.html')
-
-# Catch-all route for React Router (handles client-side routing)
-@app.get("/{path:path}")
-async def catch_all(path: str):
-    """
-    Catch-all route to serve the React app for client-side routing.
-    API routes should be prefixed with 'api/' to avoid conflicts.
-    """
-    # If it's an API route that doesn't exist, return error
-    if path.startswith("api/"):
-        return {"error": "API endpoint not found", "path": path}
-    
-    # For all other paths, serve the React app (client-side routing)
-    if os.path.exists("static/index.html"):
-        return FileResponse('static/index.html')
-    else:
-        return {"error": "Frontend not found", "message": "React app build files not available"}
+# Mount static files at root with html=True to serve the React app properly
+app.mount("/", StaticFiles(directory="static", html=True), name="static")

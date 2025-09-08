@@ -1,26 +1,25 @@
+# app/llm_client.py
 import os
-import google.generativeai as genai
-from dotenv import load_dotenv
-load_dotenv()
+from google import genai
+from google.genai import types as genai_types
 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY is not set")
 
-GEMINI_MODEL_NAME = "gemini-1.5-flash-latest"  # Use your preferred Gemini model
+client = genai.Client(api_key=GEMINI_API_KEY)
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-
-def call_gemini(prompt: str) -> str:
-    # Configure with API key
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        raise RuntimeError("Set GOOGLE_API_KEY environment variable in your .env file")
-    genai.configure(api_key=api_key)
-
-    # Instantiate the model
-    model = genai.GenerativeModel(GEMINI_MODEL_NAME)
-    
-    # Generate content
-    response = model.generate_content(prompt)
-    
-    # Extract the generated text from the response
-    if hasattr(response, "text"):
-        return response.text.strip()
-    return "Could not generate a response."
+def call_openai_json(prompt: str, model: str = DEFAULT_MODEL):
+    """
+    Maintain the same function name used by main.py; returns a JSON string.
+    """
+    resp = client.models.generate_content(
+        model=model,
+        contents=prompt,
+        config=genai_types.GenerateContentConfig(
+            response_mime_type="application/json",
+        ),
+    )
+    # resp.text is a JSON string when response_mime_type is application/json
+    return resp.text

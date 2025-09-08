@@ -457,3 +457,32 @@ body, .main-bg {
 .chevron-down {
   font-size: 0.7rem;
 }
+
+/* Add this CSS for markdown table styling */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #ddd;
+  padding: 12px 8px;
+  text-align: left;
+}
+
+.markdown-content th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.markdown-content tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.markdown-content tr:hover {
+  background-color: #e9ecef;
+}

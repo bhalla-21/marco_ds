@@ -17,7 +17,7 @@ function HomePage() {
       <div className="header-section">
         {/* The Mondelez logo is now in TopNav, so it's removed from here */}
         <h1 className="marco-header">
-          MARCO<span className="gpt-accent">-GPT</span>
+          MARCO<span className="gpt-accent">-DEEPSEEK</span>
           <span className="sparkle-icon">✨</span>
         </h1>
         <div className="powered-by">

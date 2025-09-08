@@ -1,0 +1,66 @@
+import json
+import re
+
+# Fixed regex to capture JSON in fenced code blocks
+FENCED_JSON = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```
+
+def extract_first_json(text: str):
+    if not text:
+        return None
+    
+    # 1) Prefer fenced ``` blocks
+    m = FENCED_JSON.search(text)
+    if m:
+        blob = m.group(1)
+        try:
+            return json.loads(blob)
+        except Exception:
+            pass
+    
+    # 2) First brace to last brace heuristic
+    start = text.find("{")
+    end = text.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        candidate = text[start:end+1]
+        try:
+            # Clean common escape issues before parsing
+            cleaned = candidate.replace('\n', '\\n').replace('\t', '\\t')
+            return json.loads(cleaned)
+        except Exception:
+            pass
+    
+    # 3) Try raw text
+    try:
+        return json.loads(text)
+    except Exception:
+        return None
+
+# Alternative robust version for your specific error
+def extract_first_json_robust(text: str):
+    if not text:
+        return None
+    
+    # Remove any leading/trailing whitespace
+    text = text.strip()
+    
+    # Try multiple patterns
+    patterns = [
+        # Fenced code blocks
+        r"``````",
+        # Just the JSON object
+        r"(\{.*\})",
+    ]
+    
+    for pattern in patterns:
+        matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
+        for match in matches:
+            try:
+                # Clean problematic characters
+                cleaned = match.replace('\n', '\\n').replace('\t', '\\t').replace('\r', '')
+                # Remove any trailing commas before closing braces/brackets
+                cleaned = re.sub(r',\s*([}\]])', r'\1', cleaned)
+                return json.loads(cleaned)
+            except json.JSONDecodeError:
+                continue
+    
+    return None

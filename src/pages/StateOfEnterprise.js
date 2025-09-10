@@ -5,7 +5,7 @@ import SectionCard from "../components/SectionCard";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const API_URL = "http://localhost:8000";
+const API_URL = "https://marco-ds-1.onrender.com";
 // UPDATED FAQS WITH BRAND DROPDOWNS AND NEW TEMPLATES
 const faqs = [
   {

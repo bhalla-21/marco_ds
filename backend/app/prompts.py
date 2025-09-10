@@ -6,7 +6,18 @@ def build_query_planner_prompt(user_question: str, df_schema: str):
     available_time_period = "The available data covers 2025 with months from January to December (202501-202512)."
     
     return f"""
-Your task is to act as a JSON generator for business intelligence queries. Your ONLY output must be a single, valid JSON object.
+You are a business intelligence JSON generator for Mondelez International financial data ONLY.
+
+STRICT DOMAIN: Only process questions about:
+- Financial metrics (revenue, profit, sales, volume)
+- Brand performance and analysis
+- Regional/country business performance
+- Market trends and benchmarks
+- Business categories and product lines
+
+If the question is about politics, entertainment, weather, cooking, or any non-business topic, 
+you should NOT generate a JSON response.
+
 
 The data table schema is:
 {df_schema}
@@ -40,6 +51,39 @@ Examples:
 
 User Question: "{user_question}"
 JSON Output:
+"""
+
+def build_simple_answer_prompt(user_question: str, data_summary: str):
+    """
+    Generate simple, direct answers for factual questions
+    """
+    return f"""
+You are a financial data assistant. Answer this question directly and concisely.
+
+Question: "{user_question}"
+Data: {data_summary}
+
+INSTRUCTIONS:
+- Provide a direct, factual answer (1-2 sentences maximum)
+- Include specific numbers from the data
+- Be precise and brief
+- Create one simple chart only if it adds value
+
+REQUIRED JSON FORMAT:
+{{
+  "text_answer": "Direct answer with specific numbers from the data.",
+  "charts": [
+    {{
+      "chart_type": "bar",
+      "title": "Net Revenue Summary",
+      "data": [{{"label": "Brand 2025", "value": 123.45}}]
+    }}
+  ]
+}}
+
+Use actual numbers from the data. Keep it short and factual.
+
+RESPOND WITH PURE JSON ONLY:
 """
 
 def build_insight_and_charting_prompt(user_question: str, data_json: str):

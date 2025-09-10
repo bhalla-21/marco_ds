@@ -12,9 +12,9 @@ function TopNav() {
           className="nav-logo" 
         />
         <div className="nav-links">
-          <NavLink to="/" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+          {/* <NavLink to="/" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
             <span className="icon-placeholder">🏠</span> Home Page
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/enterprise" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
             <span className="icon-placeholder">📈</span> State of the Enterprise
           </NavLink>

@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import ChatRequest, RichChatResponse
 from app.data_loader import (
-    load_financials, get_dynamic_data, optimized_single_analysis,
+    load_financials, get_dynamic_data, optimized_single_analysis, simple_fact_answer,
     comprehensive_analysis, synthesize_comprehensive_analysis, 
     get_benchmark_data, get_performance_summary
 )
@@ -21,6 +21,8 @@ from app.prompts import build_query_planner_prompt, build_insight_and_charting_p
 from app.llm_client import call_openai_json as call_gemini  # Uses your Gemini client
 from app.chart_generator import render_chart
 from app.utils import clean_and_parse_json
+from app.question_classifier import classify_question_type  # NEW IMPORT
+from app.question_validator import is_valid_business_question, get_polite_refusal_message  # NEW IMPORT
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -43,11 +45,21 @@ app.add_middleware(
 @app.post("/chat", response_model=RichChatResponse)
 def chat_endpoint(request: ChatRequest = Body(...)):
     """
-    Process a user's question, plan a data query, fetch data,
-    and generate analysis + charts.
+    Process a user's question with validation and routing for business relevance
     """
     try:
         logging.info(f"Received new question: \"{request.message.text}\"")
+        
+        # STEP 0: VALIDATE QUESTION RELEVANCE - NEW ADDITION
+        is_valid, reason = is_valid_business_question(request.message.text)
+        
+        if not is_valid:
+            logging.info(f"Question rejected: {reason}")
+            refusal_response = get_polite_refusal_message(request.message.text, reason)
+            return RichChatResponse(
+                text_answer=refusal_response["text_answer"],
+                charts=refusal_response["charts"]
+            )
 
         # Step 1: Query Planning (Gemini JSON-only response)
         planner_prompt = build_query_planner_prompt(request.message.text, df_schema)
@@ -96,8 +108,24 @@ def chat_endpoint(request: ChatRequest = Body(...)):
         else:
             logging.info(f"Fetched {len(fetched_df)} rows for analysis")
 
-        # Step 3: Analysis - Optimized for 750-row dataset
-        if len(fetched_df) > 1000:
+        # Step 3: Analysis - WITH QUESTION TYPE ROUTING
+        question_type = classify_question_type(request.message.text)
+        logging.info(f"Question classified as: {question_type}")
+
+        if question_type == 'simple':
+            # Fast path for simple questions
+            logging.info(f"Using simple answer path for {len(fetched_df)} rows")
+            try:
+                llm_response_data = simple_fact_answer(request.message.text, fetched_df)
+                text_answer = llm_response_data.get("text_answer", "Simple answer generated.")
+                chart_specs = llm_response_data.get("charts", [])
+                logging.info("Simple answer path completed successfully")
+            except Exception as e:
+                logging.error(f"Simple answer path failed: {e}")
+                text_answer = "The specific value you requested is not readily available in our current dataset."
+                chart_specs = []
+
+        elif len(fetched_df) > 1000:
             # Only use multi-batch for very large datasets
             logging.info(f"Very large dataset ({len(fetched_df)} rows), using multi-batch analysis")
             try:
@@ -112,11 +140,16 @@ def chat_endpoint(request: ChatRequest = Body(...)):
                 text_answer = llm_response_data.get("text_answer", "Analysis completed with limited data.")
                 chart_specs = llm_response_data.get("charts", [])
         else:
-            # Optimized path for your 750-row dataset
+            # Optimized path for your 750-row dataset - ANALYTICAL QUESTIONS
             logging.info(f"Standard dataset ({len(fetched_df)} rows), using optimized single-call analysis")
             
             try:
                 llm_response_data = optimized_single_analysis(request.message.text, fetched_df)
+                
+                # Add safety check
+                if llm_response_data is None:
+                    llm_response_data = {"text_answer": "Service temporarily unavailable. Please try again.", "charts": []}
+                
                 text_answer = llm_response_data.get("text_answer", "Analysis completed.")
                 chart_specs = llm_response_data.get("charts", [])
                 logging.info("Optimized single-call analysis completed successfully")
